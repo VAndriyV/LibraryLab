@@ -1,3 +1,5 @@
+using AutoMapper;
+using LibraryLab.Configurations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +23,19 @@ namespace LibraryLab
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            // In production, the React files will be served from this directory
+            services.AddLibraryContext(Configuration)
+                    .ConfigureRepositories()
+                    .ConfigureServices()
+                    .JwtAuthentication();
+
+            Mapper.Initialize(cfg =>
+            cfg.AddMaps(new[] {
+                "DataEFCore",
+                "LibraryLab",
+                "Domain"
+                })
+            );
+
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
@@ -42,6 +56,7 @@ namespace LibraryLab
 
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+            app.UseAuthentication();            
 
             app.UseMvc(routes =>
             {

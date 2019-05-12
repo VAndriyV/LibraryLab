@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataEFCore.Entities
 {
-    public partial class Userbook
+    public partial class UserBook
     {
         public long Id { get; set; }
         public long UserId { get; set; }

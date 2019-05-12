@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Domain.Models
 {
-    public class Userbook
+    public class UserBook
     {
         public long Id { get; set; }
         public long UserId { get; set; }

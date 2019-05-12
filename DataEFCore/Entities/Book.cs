@@ -7,7 +7,7 @@ namespace DataEFCore.Entities
     {
         public Book()
         {
-            Userbook = new HashSet<Userbook>();
+            UserBook = new HashSet<UserBook>();
         }
 
         public long Id { get; set; }
@@ -20,6 +20,6 @@ namespace DataEFCore.Entities
 
         public virtual Author Author { get; set; }
         public virtual Genre Genre { get; set; }
-        public virtual ICollection<Userbook> Userbook { get; set; }
+        public virtual ICollection<UserBook> UserBook { get; set; }
     }
 }

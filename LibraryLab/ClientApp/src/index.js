@@ -1,29 +1,25 @@
-import 'bootstrap/dist/css/bootstrap.css';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'react-router-redux';
-import { createBrowserHistory } from 'history';
-import configureStore from './store/configureStore';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./index.css";
+import App from "./components/App/App";
+import * as serviceWorker from "./serviceWorker";
+import store from "./store/store";
+import { BookServiceProvider } from "./components/BookServiceProvider/BookServiceProvider";
+import FetchApiService from "./services/FetchApiService";
+import ErrorBoundry from "./components/error-boundry/error-boundry";
 
-// Create browser history to use in the Redux store
-const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
-const history = createBrowserHistory({ basename: baseUrl });
-
-// Get the application-wide store instance, prepopulating with state from the server where available.
-const initialState = window.initialReduxState;
-const store = configureStore(history, initialState);
-
-const rootElement = document.getElementById('root');
-
+const bookService = new FetchApiService();
 ReactDOM.render(
-  <Provider store={store}>
-    <ConnectedRouter history={history}>
-      <App />
-    </ConnectedRouter>
-  </Provider>,
-  rootElement);
+  <ErrorBoundry>
+    <Provider store={store}>
+      <BookServiceProvider value={bookService}>
+        <App />
+      </BookServiceProvider>
+    </Provider>
+  </ErrorBoundry>,
+  document.getElementById("root")
+);
 
-registerServiceWorker();
+serviceWorker.unregister();
