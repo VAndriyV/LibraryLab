@@ -15,6 +15,12 @@ namespace DataEFCore.Repositories
     public class BookRepository : IBookRepository
     {
         private readonly LibraryContext _context;
+
+        public BookRepository(LibraryContext context)
+        {
+            _context = context;
+        }
+
         public async Task AddAsync(Book newBook)
         {
             var entity = Mapper.Map<Entities.Book>(newBook);
@@ -46,35 +52,40 @@ namespace DataEFCore.Repositories
 
         public async Task<IEnumerable<Book>> GetRangeAsync(int limit, int offset)
         {
-            return await _context.Book.Include(b => b.Author).Include(b => b.Genre).Skip(offset).Take(limit)
+            var result = await _context.Book.Include(b => b.Author).Include(b => b.Genre).Skip(offset).Take(limit)
                 .ProjectTo<Book>().ToListAsync();
+            return result;
         }
 
         public async Task<IEnumerable<Book>> GetRangeByAuthorIdAsync(long authorId, int limit, int offset)
         {
-            return await _context.Book.Include(b => b.Author).Include(b => b.Genre).Where(b => b.AuthorId == authorId)
+            var result =  await _context.Book.Include(b => b.Author).Include(b => b.Genre).Where(b => b.AuthorId == authorId)
                 .Skip(offset).Take(limit)
                 .ProjectTo<Book>().ToListAsync();
+            return result;
         }
 
         public async Task<IEnumerable<Book>> GetRangeByGenreNameAsync(string genreName, int limit, int offset)
         {
-            return await _context.Book.Include(b => b.Author).Include(b => b.Genre).Where(b => b.Genre.Name == genreName)
+            var result =  await _context.Book.Include(b => b.Author).Include(b => b.Genre).Where(b => b.Genre.Name == genreName)
                  .Skip(offset).Take(limit)
                  .ProjectTo<Book>().ToListAsync();
+            return result;
         }
 
         public async Task<IEnumerable<Book>> GetRangeByTitleAsync(string title, int limit, int offset)
         {
-            return await _context.Book.Include(b => b.Author).Include(b => b.Genre).Where(b => b.Title.ToLower().Contains(title.ToLower()))
+            var result = await _context.Book.Include(b => b.Author).Include(b => b.Genre).Where(b => b.Title.ToLower().Contains(title.ToLower()))
                   .Skip(offset).Take(limit)
                   .ProjectTo<Book>().ToListAsync();
+            return result;
         }
 
         public async Task<IEnumerable<Book>> GetUserBooksAsync(string userEmail)
         {
-            return await _context.Book.Include(b => b.UserBook.Select(u => u.User))
+            var result = await _context.Book.Include(b => b.UserBook.Select(u => u.User))
                 .Where(b => b.UserBook.First().User.Email==userEmail).ProjectTo<Book>().ToListAsync();
+            return result;
         }       
     }
 }

@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace LibraryLab.ViewModels
 {
-    public class UserLoginViewModel
+    public class NewAuthorViewModel
     {
+        public long Id { get; set; }
         [Required]
-        public string Email { get; set; }
+        [MaxLength(30)]
+        public string FirstName { get; set; }
         [Required]
-        public string Password { get; set; }
+        [MaxLength(30)]
+        public string LastName { get; set; }
     }
 }

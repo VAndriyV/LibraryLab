@@ -21,6 +21,7 @@ namespace DataEFCore.Configurations
                 .HasMaxLength(30);
 
             entity.Property(e => e.LastName)
+                .IsRequired()
                 .HasColumnName("last_name")
                 .HasMaxLength(30);
         }

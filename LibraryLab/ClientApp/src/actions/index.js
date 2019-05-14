@@ -149,11 +149,12 @@ const fetchBooksByAuthorId = bookService => (
 const login = bookService => userLoginData => dispatch => {
   bookService
     .login(userLoginData)
-    .then(token => {
-      localStorage.setItem("token",token);
-      const decoded = jwt_decode(token);
-      const userData = JSON.parse(decoded.sub);     
-      dispatch(loginSuccess(userData));     
+      .then(token => {
+          console.log(token);
+          localStorage.setItem("token", token);
+          const decoded = jwt_decode(token);
+              
+      dispatch(loginSuccess(decoded));     
     })
     .catch(err => dispatch(loginFailure(err)));
 };

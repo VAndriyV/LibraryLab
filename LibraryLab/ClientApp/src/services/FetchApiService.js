@@ -1,5 +1,5 @@
 export default class FetchApiService {
-  _apiBase = "http://127.0.0.1:8888/api/";
+  _apiBase = "/api/";
 
   getRequest = async url => {
 
@@ -132,7 +132,7 @@ export default class FetchApiService {
       throw errorMsg;
     }
 
-    return res.headers.get("authorization");
+      return await res.json();
   };
 
   getBooksRange = async (limit, offset) => {
@@ -152,7 +152,7 @@ export default class FetchApiService {
   };
 
   getBooksByGenre = async (genre, limit, offset) => {
-    const path = `booksByGenre?genre=${genre}&limit=${limit}&offset=${offset}`;
+    const path = `books/${genre}/genres?limit=${limit}&offset=${offset}`;
 
     const result = await this.getRequest(path);
 
@@ -160,7 +160,7 @@ export default class FetchApiService {
   };
 
   getBooksByAuthorId = async (authorId, limit, offset) => {
-    const path = `booksByAuthor?authorId=${authorId}&limit=${limit}&offset=${offset}`;
+      const path = `books/${authorId}/authors?limit=${limit}&offset=${offset}`;
 
     const result = await this.getRequest(path);
 
@@ -176,7 +176,7 @@ export default class FetchApiService {
   };
 
   login = async userLoginData => {
-    const path = "login";
+    const path = "session";
 
     const result = await this.loginRequest(path, userLoginData);
 
@@ -184,7 +184,7 @@ export default class FetchApiService {
   };
 
   registration = async userRegistrationData => {
-    const path = "registration";
+    const path = "users";
 
     const result = await this.postRequest(path, userRegistrationData);
 
@@ -192,7 +192,7 @@ export default class FetchApiService {
   };
 
   checkIsLoggedIn = async () => {
-    const path = "isLoggedIn";
+    const path = "userStatus";
 
     const result = await this.checkUserStatusRequest(path);
 

@@ -5,8 +5,10 @@ using AutoMapper;
 using Domain.Exceptions;
 using Domain.Models;
 using Domain.Services.Interfaces;
+using LibraryLab.Extensions;
 using LibraryLab.TokenUtil;
 using LibraryLab.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -14,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace LibraryLab.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -24,34 +26,26 @@ namespace LibraryLab.Controllers
             _userService = userService;
         }
 
-        [HttpPost("login")]
+        [HttpPost("session")]
         public async Task<IActionResult> Login([FromBody] UserLoginViewModel userLogin)
         {
             try
             {
-                var user = await _userService.LoginAsync(userLogin.Email, userLogin.Password);
-                var identity = ConfigureIdentity.GetIdentity(user.Email,user.RoleId);
-                var now = DateTime.UtcNow;
-                // создаем JWT-токен
-                var jwt = new JwtSecurityToken(
-                        issuer: AuthOptions.ISSUER,
-                        audience: AuthOptions.AUDIENCE,
-                        notBefore: now,
-                        claims: identity.Claims,
-                        expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                        signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-                var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-                var response = new
+                if (ModelState.IsValid)
                 {
-                    access_token = encodedJwt,
-                    email = identity.FindFirst("email"),
-                    roleId=identity.FindFirst("roleId")
-                };
-                
-                Response.ContentType = "application/json";
-                await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
-                return Ok();
+                    var user = await _userService.LoginAsync(userLogin.Email, userLogin.Password);
+
+                    var identity = ConfigureIdentity.GetIdentity(user.Email, user.RoleId);
+                    var jwtProvider = new JwtProvider();
+
+                    var encodedJwt = jwtProvider.GetEncodedJwt(identity);                  
+                    
+                    return new ObjectResult(encodedJwt);
+                }
+                else
+                {
+                    return BadRequest(ModelState.Errors());
+                }
             }
             catch(UserNotFoundException e)
             {
@@ -63,14 +57,22 @@ namespace LibraryLab.Controllers
             }
         }
 
-        [HttpPost("registration")]
+        [HttpPost("users")]
         public async Task<IActionResult> Registration([FromBody] UserRegistrationViewModel newUser)
         {
             try
             {
-                var user = Mapper.Map<User>(newUser);
-                await _userService.RegistrationAsync(user);
-                return Ok("Welcome, "+user.Email+", now you can login");
+                if (ModelState.IsValid)
+                {
+                    var user = Mapper.Map<User>(newUser);
+                    await _userService.RegistrationAsync(user);
+                    return Ok("Welcome, " + user.Email + ", now you can login");
+                }
+                else
+                {
+                    return BadRequest(ModelState.Errors());
+                }
+                
             }
             catch(UserIsAlreadyExistException e)
             {
@@ -82,5 +84,18 @@ namespace LibraryLab.Controllers
             }
         }
 
+        [Authorize]
+        [HttpGet("userStatus")]
+        public IActionResult GetUserStatus()
+        {
+            var jwtProvider = new JwtProvider();
+            var authHeader = Request.Headers["Authorization"].ToString();
+
+            var token = authHeader.Substring("Bearer ".Length);
+
+            var data = jwtProvider.DecodeJwt(token);
+
+            return new ObjectResult(data);
+        }
     }
 }
