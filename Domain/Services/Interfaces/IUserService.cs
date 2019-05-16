@@ -10,5 +10,6 @@ namespace Domain.Services.Interfaces
     {
         Task<User> LoginAsync(string email, string password);
         Task RegistrationAsync(User newUser);
+        Task<User> GetUserByEmailAsync(string email);
     }
 }

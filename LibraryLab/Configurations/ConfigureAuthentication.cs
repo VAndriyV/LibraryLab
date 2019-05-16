@@ -34,6 +34,11 @@ namespace LibraryLab.Configurations
                             ValidateIssuerSigningKey = true,
                         };
                     });
+            services.AddAuthorization(opts => {
+                opts.AddPolicy("Librarian", policy => {
+                    policy.RequireClaim("RoleId", "2");
+                });
+            });
 
             return services;
         }

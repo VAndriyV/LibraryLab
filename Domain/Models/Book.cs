@@ -4,11 +4,7 @@ using System.Collections.Generic;
 namespace Domain.Models
 {
     public class Book
-    {
-        public Book()
-        {
-            UserBook = new HashSet<UserBook>();
-        }
+    {     
 
         public long Id { get; set; }
         public string Title { get; set; }
@@ -20,6 +16,6 @@ namespace Domain.Models
 
         public virtual Author Author { get; set; }
         public virtual Genre Genre { get; set; }
-        public virtual ICollection<UserBook> UserBook { get; set; }
+       
     }
 }

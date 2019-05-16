@@ -10,7 +10,7 @@ namespace DataEFCore.AutoMapperProfile
     {
         public BookProfile()
         {
-            CreateMap<Entities.Book, Book>();
+            CreateMap<Entities.Book, Book>().ReverseMap();
         }
     }
 }

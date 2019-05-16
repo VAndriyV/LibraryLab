@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Domain.Exceptions;
 using Domain.Models;
 using Domain.Services.Interfaces;
 using LibraryLab.ViewModels;
@@ -167,21 +168,9 @@ namespace LibraryLab.Controllers
                 return StatusCode(500, "Server error. Try to reload page.");
             }
         }
+        
 
-        [HttpGet("books/{userEmail}/users")]
-        [Authorize]
-        public async Task<IActionResult> GetUserBooks(string email)
-        {
-            var books = await _bookService.GetUserBooksAsync(email);
-            if (books.Count() == 0)
-            {
-                return new NotFoundObjectResult("You have not had ordered books yet.");
-            }
-
-            return new ObjectResult(books);
-        }
-
-        [HttpGet("books/availableCount")]
+        [HttpPost("books/availableCount")]
         public async Task<IActionResult> GetBooksAvailableCountAsync(IEnumerable<long> books)
         {
             try
@@ -196,6 +185,7 @@ namespace LibraryLab.Controllers
         }
 
         [HttpPost("books")]
+        [Authorize(Roles="2")]
         public async Task<IActionResult> AddBook([FromBody] NewBookViewModel book)
         {
             if (ModelState.IsValid)
@@ -205,6 +195,10 @@ namespace LibraryLab.Controllers
                     var newBook = Mapper.Map<Book>(book);
                     await _bookService.AddBookAsync(newBook);
                     return Ok("Book successfully added");
+                }
+                catch (MemberRelationException e)
+                {
+                    return StatusCode(400, e.Message + " "+ e.Column );
                 }
                 catch(Exception e)
                 {
@@ -218,6 +212,7 @@ namespace LibraryLab.Controllers
         }
 
         [HttpPut("books")]
+        [Authorize(Roles="2")]
         public async Task<IActionResult> UpdateBook([FromBody] NewBookViewModel book)
         {
             if (ModelState.IsValid)
@@ -227,6 +222,10 @@ namespace LibraryLab.Controllers
                     var newBook = Mapper.Map<Book>(book);
                     await _bookService.UpdateBookAsync(newBook);
                     return Ok("Book successfully updated");
+                }
+                catch (MemberRelationException e)
+                {
+                    return StatusCode(400, e.Message + " " + e.Column);
                 }
                 catch (Exception e)
                 {
@@ -240,6 +239,7 @@ namespace LibraryLab.Controllers
         }
 
         [HttpPost("authors")]
+        [Authorize(Roles="2")]
         public async Task<IActionResult> AddAuthor([FromBody] NewAuthorViewModel author)
         {
             if (ModelState.IsValid)
@@ -262,6 +262,7 @@ namespace LibraryLab.Controllers
         }
 
         [HttpPut("authors")]
+        [Authorize(Roles="2")]
         public async Task<IActionResult> UpdateAuthor([FromBody] NewAuthorViewModel author)
         {
             if (ModelState.IsValid)

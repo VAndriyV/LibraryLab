@@ -14,6 +14,8 @@ namespace LibraryLab.ViewModels
         [Required]
         [MinLength(6)]
         public string Password { get; set; }
+        [Compare("Password")]
+        public string ConfirmPassword { get; set; }
         [Required]
         [RegularExpression(@"\d{3}[\-]\d{3}[\-]\d{4}")]
         public string PhoneNumber { get; set; }

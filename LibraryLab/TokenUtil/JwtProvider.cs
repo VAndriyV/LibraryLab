@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Primitives;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -29,7 +30,7 @@ namespace LibraryLab.TokenUtil
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadJwtToken(token);
             var email = jsonToken.Claims.FirstOrDefault(c => c.Type == "email").Value;
-            var roleId = jsonToken.Claims.FirstOrDefault(c => c.Type == "roleId").Value;
+            var roleId = jsonToken.Claims.FirstOrDefault(c => c.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
 
             if (email != null && roleId != null)
             {
@@ -43,8 +44,16 @@ namespace LibraryLab.TokenUtil
             {
                 return null;
             }
-        }      
-                
+        }
+
+        public TokenData DecodeJwt(StringValues authHeader)
+        {
+            var stringHeader = authHeader.ToString();
+            var handler = new JwtSecurityTokenHandler();
+            var token = stringHeader.Substring("Bearer ".Length);
+            return DecodeJwt(token);
+        }
+
     }
 }
 

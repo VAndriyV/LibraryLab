@@ -17,6 +17,11 @@ namespace Domain.Services
             _userRepository = userRepository;
         }
 
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            return await _userRepository.GetByEmailAsync(email);
+        }
+
         public async Task<User> LoginAsync(string email, string password)
         {
             var user = await _userRepository.GetByEmailAsync(email);
@@ -43,7 +48,7 @@ namespace Domain.Services
             {
                 throw new UserIsAlreadyExistException(newUser.Email);
             }
-
+            newUser.RoleId = 1;
             await _userRepository.AddAsync(newUser);
 
         }

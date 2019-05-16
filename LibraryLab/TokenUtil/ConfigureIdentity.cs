@@ -13,11 +13,12 @@ namespace LibraryLab.TokenUtil
             var claims = new List<Claim>
             {
                     new Claim("email", email),
-                    new Claim("roleId",roleId.ToString())
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType,roleId.ToString())
             };
             ClaimsIdentity claimsIdentity =
-            new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                ClaimsIdentity.DefaultRoleClaimType);
+            new ClaimsIdentity(claims, "Token");
+            var claim = new Claim(ClaimsIdentity.DefaultRoleClaimType, roleId.ToString());
+            claimsIdentity.AddClaim(claim);
             return claimsIdentity;
         }
     }

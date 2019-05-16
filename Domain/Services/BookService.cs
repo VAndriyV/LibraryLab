@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Domain.Exceptions;
+using Domain.Models;
 using Domain.Repositories;
 using Domain.Services.Interfaces;
 using System;
@@ -25,7 +26,14 @@ namespace Domain.Services
 
         public async Task AddBookAsync(Book newBook)
         {
-            await _bookRepository.AddAsync(newBook);
+            try
+            {
+                await _bookRepository.AddAsync(newBook);
+            }
+            catch(MemberRelationException e)
+            {
+                throw;
+            }
         }
 
         public async Task<IEnumerable<Author>> GetAllAuthorsAsync()
@@ -56,12 +64,7 @@ namespace Domain.Services
         public async Task<IEnumerable<Book>> GetBooksRangeByTitleAsync(string title, int limit, int offset)
         {
             return await _bookRepository.GetRangeByTitleAsync(title, limit, offset);
-        }
-
-        public async Task<IEnumerable<Book>> GetUserBooksAsync(string userEmail)
-        {
-            return await _bookRepository.GetUserBooksAsync(userEmail);
-        }
+        }      
 
         public async Task<bool> UpdateAuthorAsync(Author author)
         {
@@ -70,7 +73,14 @@ namespace Domain.Services
 
         public async Task<bool> UpdateBookAsync(Book book)
         {
-            return await _bookRepository.UpdateAsync(book);
+            try
+            {
+                return await _bookRepository.UpdateAsync(book);
+            }
+            catch (MemberRelationException e)
+            {
+                throw;
+            }           
         }
     }
 }

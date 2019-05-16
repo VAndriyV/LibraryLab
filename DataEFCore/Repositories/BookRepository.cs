@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using DataEFCore.Context;
+using Domain.Exceptions;
 using Domain.Models;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,24 @@ namespace DataEFCore.Repositories
         {
             var entity = Mapper.Map<Entities.Book>(newBook);
             await _context.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateException e)
+            {
+                var innerEx = (Npgsql.PostgresException)e.InnerException;
+                if (innerEx.SqlState == "23503")
+                {
+                    throw new MemberRelationException("Check entered value. ", 
+                        innerEx.ConstraintName.Substring(0, innerEx.ConstraintName.Length-3));
+                }
+                else
+                {
+                    throw;
+                }                
+                
+            }
         }
 
         public async Task<bool> UpdateAsync(Book book)
@@ -37,9 +55,26 @@ namespace DataEFCore.Repositories
 
             Mapper.Map(book, entity);
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
 
-            return true;
+                return true;
+            }
+            catch (DbUpdateException e)
+            {
+                var innerEx = (Npgsql.PostgresException)e.InnerException;
+                if (innerEx.SqlState == "23503")
+                {
+                    throw new MemberRelationException("Check entered value. ",
+                        innerEx.ConstraintName.Substring(0, innerEx.ConstraintName.Length - 3));
+                }
+                else
+                {
+                    throw;
+                }
+
+            }
         }
 
         public async Task<Dictionary<long, int>> GetAvailableCountAsync(IEnumerable<long> books)
@@ -80,12 +115,6 @@ namespace DataEFCore.Repositories
                   .ProjectTo<Book>().ToListAsync();
             return result;
         }
-
-        public async Task<IEnumerable<Book>> GetUserBooksAsync(string userEmail)
-        {
-            var result = await _context.Book.Include(b => b.UserBook.Select(u => u.User))
-                .Where(b => b.UserBook.First().User.Email==userEmail).ProjectTo<Book>().ToListAsync();
-            return result;
-        }       
+           
     }
 }

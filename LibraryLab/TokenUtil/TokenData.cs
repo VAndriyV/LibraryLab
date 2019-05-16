@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace LibraryLab.TokenUtil
 {
     public class TokenData
-    {       
+    {      
         public string Email { get; set; }
         public long RoleId { get; set; }
     }

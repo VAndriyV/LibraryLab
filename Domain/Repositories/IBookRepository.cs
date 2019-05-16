@@ -8,8 +8,7 @@ namespace Domain.Repositories
 {
     public interface IBookRepository
     {
-        Task<IEnumerable<Book>> GetRangeByAuthorIdAsync(long authorId, int limit, int offset);
-        Task<IEnumerable<Book>> GetUserBooksAsync(string userEmail);
+        Task<IEnumerable<Book>> GetRangeByAuthorIdAsync(long authorId, int limit, int offset);     
         Task<IEnumerable<Book>> GetRangeByTitleAsync(string title, int limit, int offset);
         Task<IEnumerable<Book>> GetRangeAsync(int limit, int offset);
         Task<IEnumerable<Book>> GetRangeByGenreNameAsync(string genreName, int limit, int offset);

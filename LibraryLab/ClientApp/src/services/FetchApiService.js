@@ -168,7 +168,7 @@ export default class FetchApiService {
   };
 
   getBooksByTitle = async (title,limit,offset)=>{
-    const path = `booksByTitle?title=${title}&limit=${limit}&offset=${offset}`;
+    const path = `books/${title}?limit=${limit}&offset=${offset}`;
 
     const result = await this.getRequest(path);
 
@@ -200,7 +200,7 @@ export default class FetchApiService {
   };
 
   makeOrder = async orderData => {
-    const path = "makeOrder";
+    const path = "orders";
 
     const result = await this.postRequest(path, orderData);
 
@@ -208,7 +208,7 @@ export default class FetchApiService {
   };
 
   getAvailability = async cartItems => {
-    const path = "getAvailability";
+    const path = "books/availableCount";
 
     const result = await this.postRequest(path, cartItems);
 
@@ -216,7 +216,7 @@ export default class FetchApiService {
   };
 
   addAuthor = async author => {
-    const path = "addAuthor";
+    const path = "authors";
 
     const result = await this.postRequest(path, author);
 
@@ -224,7 +224,7 @@ export default class FetchApiService {
   };
 
   updateAuthor = async author=>{
-    const path = "updateAuthor";
+      const path = "authors";
 
     const result = await this.putRequest(path,author);
     
@@ -232,7 +232,7 @@ export default class FetchApiService {
   };
 
   addBook = async book => {
-    const path = "addBook";
+    const path = "books";
 
     const result = await this.postRequest(path, book);
 
@@ -240,7 +240,7 @@ export default class FetchApiService {
   };
 
   updateBook = async book=>{
-    const path = "updateBook";
+    const path = "books";
 
     const result = await this.putRequest(path,book);
     
@@ -248,7 +248,7 @@ export default class FetchApiService {
   };
 
   getUserBooksByEmail = async email=>{
-    const path = `userBooks?email=${email}`;
+    const path = `orders/${email}`;
 
     const result = await this.getRequest(path);
 
@@ -256,7 +256,7 @@ export default class FetchApiService {
   };
 
   updateUserBook = async userBook=>{
-    const path = 'updateUserBook';
+    const path = 'orders';
 
     const result = await this.putRequest(path,userBook);
 

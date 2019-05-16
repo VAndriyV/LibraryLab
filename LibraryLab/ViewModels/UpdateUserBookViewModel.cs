@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace LibraryLab.ViewModels
 {
-    public class UpdateUserBookViewModelcs
+    public class UpdateUserBookViewModel
     {
         public long UserId { get; set; }
         public long BookId { get; set; }

@@ -13,7 +13,8 @@ import { Redirect } from 'react-router';
 class OrderedBooksPage extends Component{
 
     componentDidMount(){             
-        const {fetchUserBooks,userEmail} = this.props;        
+        const { fetchUserBooks, userEmail } = this.props;
+        console.log(userEmail);
         fetchUserBooks(userEmail);
     }
 
@@ -28,11 +29,11 @@ class OrderedBooksPage extends Component{
                     </tr>
                 </thead>
                 <tbody>{arr.map(item => {
-                    return (<tr key={item[0].id}>
+                    return (<tr key={item.book.id}>
                         
-                        <td>{item[0].title}</td>
-                        <td>{item[0].year}</td>
-                        <td>{item[1]}</td>                        
+                        <td>{item.book.title}</td>
+                        <td>{item.book.year}</td>
+                        <td>{item.count}</td>                        
                     </tr>)
                 })}</tbody>
             </Table>;
@@ -41,7 +42,8 @@ class OrderedBooksPage extends Component{
 
     render(){
        
-        const {loading,error,books, isLoggedIn} = this.props;
+        const { loading, error, books, isLoggedIn } = this.props;
+        console.log(books);
 
         if(!isLoggedIn){
             return <Redirect to ="/login"/>;

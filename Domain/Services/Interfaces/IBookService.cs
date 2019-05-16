@@ -8,8 +8,7 @@ namespace Domain.Services.Interfaces
 {
     public interface IBookService
     {
-        Task<IEnumerable<Book>> GetBooksRangeByAuthorIdAsync(long authorId, int limit, int offset);
-        Task<IEnumerable<Book>> GetUserBooksAsync(string userEmail);
+        Task<IEnumerable<Book>> GetBooksRangeByAuthorIdAsync(long authorId, int limit, int offset);        
         Task<IEnumerable<Book>> GetBooksRangeByTitleAsync(string title, int limit, int offset);
         Task<IEnumerable<Book>> GetBooksRangeAsync(int limit, int offset);
         Task<IEnumerable<Book>> GetBooksRangeByGenreNameAsync(string genreName, int limit, int offset);

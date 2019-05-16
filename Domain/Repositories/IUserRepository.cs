@@ -11,5 +11,6 @@ namespace Domain.Repositories
         Task AddAsync(User newUser);
         Task<User> GetByEmailAsync(string email);
         Task<bool> IsEmailUsedAsync(string email);
+       
     }
 }

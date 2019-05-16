@@ -5,6 +5,7 @@ using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,7 +30,7 @@ namespace DataEFCore.Repositories
             var user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
 
             return Mapper.Map<User>(user);
-        }
+        }      
 
         public async Task<bool> IsEmailUsedAsync(string email)
         {

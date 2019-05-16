@@ -38,9 +38,18 @@ namespace LibraryLab.Controllers
                     var identity = ConfigureIdentity.GetIdentity(user.Email, user.RoleId);
                     var jwtProvider = new JwtProvider();
 
-                    var encodedJwt = jwtProvider.GetEncodedJwt(identity);                  
-                    
-                    return new ObjectResult(encodedJwt);
+                    var encodedJwt = jwtProvider.GetEncodedJwt(identity);
+
+                    return new ObjectResult(new
+                    {
+                        access_token = encodedJwt,
+                        userInfo = new TokenData
+                        {
+                            Email = user.Email,
+                            RoleId = user.RoleId
+                        }
+                    });                    
+                   
                 }
                 else
                 {
@@ -53,7 +62,7 @@ namespace LibraryLab.Controllers
             }
             catch(Exception e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, "Server error. Try to reload page.");
             }
         }
 
@@ -80,7 +89,7 @@ namespace LibraryLab.Controllers
             }
             catch(Exception e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, "Server error. Try to reload page.");
             }
         }
 
@@ -88,12 +97,9 @@ namespace LibraryLab.Controllers
         [HttpGet("userStatus")]
         public IActionResult GetUserStatus()
         {
-            var jwtProvider = new JwtProvider();
-            var authHeader = Request.Headers["Authorization"].ToString();
+            var jwtProvider = new JwtProvider();          
 
-            var token = authHeader.Substring("Bearer ".Length);
-
-            var data = jwtProvider.DecodeJwt(token);
+            var data = jwtProvider.DecodeJwt(Request.Headers["Authorization"]);
 
             return new ObjectResult(data);
         }

@@ -22,11 +22,8 @@ namespace LibraryLab
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().
-                SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddJsonOptions(
-                 options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            ); 
-
+                SetCompatibilityVersion(CompatibilityVersion.Version_2_2);       
+                        
             services.AddLibraryContext(Configuration)
                     .ConfigureRepositories()
                     .ConfigureServices()

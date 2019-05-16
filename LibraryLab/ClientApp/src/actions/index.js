@@ -149,12 +149,10 @@ const fetchBooksByAuthorId = bookService => (
 const login = bookService => userLoginData => dispatch => {
   bookService
     .login(userLoginData)
-      .then(token => {
-          console.log(token);
-          localStorage.setItem("token", token);
-          const decoded = jwt_decode(token);
-              
-      dispatch(loginSuccess(decoded));     
+      .then(data => {          
+          localStorage.setItem("token", data.access_token);          
+          console.log(data);
+      dispatch(loginSuccess(data.userInfo));     
     })
     .catch(err => dispatch(loginFailure(err)));
 };
@@ -305,8 +303,8 @@ const userBooksError = error => {
 const fetchUserBooks = bookService => (email) => dispatch => {  
   dispatch(userBooksRequested());
   bookService
-    .getUserBooksByEmail(email)
-    .then(data => dispatch(userBooksLoaded(data)))
+      .getUserBooksByEmail(email)
+      .then(data => { console.log(data); dispatch(userBooksLoaded(data)); })
     .catch(err => dispatch(userBooksError(err)));
 };
 
